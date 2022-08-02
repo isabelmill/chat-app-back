@@ -16,7 +16,7 @@ app.use(express.json())
 app.use(session)
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.resolve(__dirname, 'public')))
+    app.use(express.static(path.resolve(__dirname, 'build')))
 } else {
     const corsOptions = {
         origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://127.0.0.1:3000', 'http://localhost:3000'],
@@ -39,7 +39,7 @@ connectSockets(http, session)
 
 
 app.get('/**', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
 const logger = require('./services/logger.service')
