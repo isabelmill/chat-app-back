@@ -10,7 +10,7 @@ function requireAuth(req, res, next) {
 
 function requireAdmin(req, res, next) {
   const user = req.session.user
-  if (!user.isAdmin) {
+  if (user._id !== req.body._id && !user.isAdmin) {
     logger.warn(user.fullname + ' Attempt to perform admin action')
     res.status(403).end('Unauthorized Enough..')
     return
@@ -19,7 +19,6 @@ function requireAdmin(req, res, next) {
 }
 
 
-// module.exports = requireAuth
 
 module.exports = {
   requireAuth,

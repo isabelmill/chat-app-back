@@ -1,5 +1,5 @@
 const userService = require('./user.service')
-const socketService = require('../../services/socket.service')
+const authService = require('../auth/auth.service')
 const logger = require('../../services/logger.service')
 
 async function getUser(req, res) {
@@ -46,7 +46,13 @@ async function updateUser(req, res) {
 async function addUser(req, res) {
     try {
         const user = req.body
-        const savedUser = await userService.update(user)
+        if (!user.email || !user.password || !user.fullname || !user.username || !user.img) return Promise.reject('fullname, username and password, email , image are required!')
+        const userExist = await userService.getByEmail(user.email)
+        if (userExist) return Promise.reject('Email already taken')
+        
+        const hash = await authService.encryptPassword(user.password)
+        user.password = hash
+        const savedUser = await userService.add(user)
         res.send(savedUser)
     } catch (err) {
         logger.error('Failed to update user', err)
